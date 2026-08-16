@@ -27,6 +27,10 @@ const emailWorker = new Worker(
     },
     {
         connection,
+        limiter: {
+            max: 50,
+            duration: 60000,
+        },
     },
 );
 

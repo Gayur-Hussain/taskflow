@@ -12,6 +12,7 @@ router.post("/register", authRateLimiter, validateBody(registerSchema), asyncHan
 router.post("/login", authRateLimiter, validateBody(loginSchema), asyncHandler(authController.loginUser));
 router.post("/refresh", asyncHandler(authController.refreshSession));
 router.post("/logout", asyncHandler(authController.logoutUser));
+router.post("/logout-all", protectRoute, asyncHandler(authController.logoutAllDevices));
 router.get("/me", protectRoute, asyncHandler(authController.getCurrentUser));
 
 export default router;

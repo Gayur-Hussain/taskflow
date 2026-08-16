@@ -141,6 +141,11 @@ class AuthService {
             await authRepository.revokeRefreshToken(tokenRecord.id);
         }
     }
+
+    async logoutAllDevices(userId) {
+        if (!userId) return;
+        await authRepository.revokeAllUserTokens(userId);
+    }
 }
 
 export default new AuthService();

@@ -25,6 +25,16 @@ export const emailDLQ = new Queue('emailDLQ', {
 });
 
 export const enqueueEmail = async (data) => {
+    const dedupeKey = `dedupe:assign:${data.email}:${data.taskTitle.replace(/\s+/g, "_")}`;
+
+    // Use connection (Redis client) to set a 5-second lock
+    const isNew = await connection.set(dedupeKey, "1", "NX", "PX", 5000);
+
+    if (!isNew) {
+        // Deduplicated: identical assignment within 5 seconds
+        return null;
+    }
+
     return emailQueue.add('task-assigned', data, {
         attempts: 3,
         backoff: {

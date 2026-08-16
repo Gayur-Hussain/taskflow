@@ -33,4 +33,5 @@ export const filterTasksSchema = z.object({
     page: z.preprocess((val) => Number(val), z.number().int().min(1).default(1)),
     limit: z.preprocess((val) => Number(val), z.number().int().min(1).max(100).default(20)),
     sort: z.string().optional(),
+    search: z.string().optional(),
 });

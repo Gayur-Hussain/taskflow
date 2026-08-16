@@ -46,6 +46,13 @@ const authController = {
             user: req.user,
         });
     },
+
+    logoutAllDevices: async (req, res) => {
+        const userId = req.user.id;
+        await authService.logoutAllDevices(userId);
+        clearTokenCookies(res);
+        return sendSuccess(res, 200, "Logged out of all devices successfully");
+    },
 };
 
 export default authController;

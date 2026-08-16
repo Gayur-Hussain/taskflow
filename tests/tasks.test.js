@@ -151,7 +151,7 @@ describe("Projects & Tasks Flow", () => {
 
         expect(res.statusCode).toBe(400);
         expect(res.body.success).toBe(false);
-        expect(res.body.error.code).toBe("INVALID_ASSIGNEE_ORGANIZATION");
+        expect(res.body.code).toBe("INVALID_ASSIGNEE_ORGANIZATION");
 
         await prisma.user.delete({ where: { id: anotherUser.id } });
     }, 30000);

@@ -93,7 +93,7 @@ describe("Multi-Tenant Isolation & Role Authorization", () => {
 
     expect(res.statusCode).toBe(404);
     expect(res.body.success).toBe(false);
-    expect(res.body.error.code).toBe("PROJECT_NOT_FOUND");
+    expect(res.body.code).toBe("PROJECT_NOT_FOUND");
   }, 30000);
 
   it("should prevent User B from reading Task A (returns 404)", async () => {
@@ -101,7 +101,7 @@ describe("Multi-Tenant Isolation & Role Authorization", () => {
 
     expect(res.statusCode).toBe(404);
     expect(res.body.success).toBe(false);
-    expect(res.body.error.code).toBe("TASK_NOT_FOUND");
+    expect(res.body.code).toBe("TASK_NOT_FOUND");
   }, 30000);
 
   it("should prevent a MEMBER of Org A from deleting Project A (returns 403 Forbidden)", async () => {
@@ -111,7 +111,7 @@ describe("Multi-Tenant Isolation & Role Authorization", () => {
 
     expect(res.statusCode).toBe(403);
     expect(res.body.success).toBe(false);
-    expect(res.body.error.code).toBe("FORBIDDEN");
+    expect(res.body.code).toBe("FORBIDDEN");
   }, 30000);
 
   it("should allow an ORG_ADMIN of Org A to delete Project A (returns 200)", async () => {

@@ -39,7 +39,7 @@ describe("Authentication & Session Flow", () => {
 
         expect(res.statusCode).toBe(400);
         expect(res.body.success).toBe(false);
-        expect(res.body.error.code).toBe("VALIDATION_ERROR");
+        expect(res.body.code).toBe("VALIDATION_ERROR");
     }, 30000);
 
     it("should log in user and issue tokens", async () => {

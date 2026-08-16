@@ -12,7 +12,9 @@ const tasksController = {
         const orgId = req.user.orgId;
         const result = await tasksService.listTasks(orgId, req.validatedQuery ?? req.query);
         return sendSuccess(res, 200, "Tasks retrieved successfully", result.data, {
-            pagination: result.pagination,
+            meta: {
+                pagination: result.pagination,
+            },
         });
     },
 

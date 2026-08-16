@@ -48,6 +48,14 @@ const tasksRepository = {
             deletedAt: null,
         };
 
+        if (filters.search) {
+            const formattedSearch = filters.search.trim().split(/\s+/).join(" | ");
+            where.OR = [
+                { title: { search: formattedSearch } },
+                { description: { search: formattedSearch } },
+            ];
+        }
+
         if (filters.status) {
             where.status = filters.status;
         }

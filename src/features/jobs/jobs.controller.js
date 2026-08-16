@@ -23,10 +23,23 @@ const jobsController = {
 
         const state = await job.getState();
 
+        let mappedStatus = "pending";
+        if (source === "dlq" || state === "failed") {
+            mappedStatus = "failed";
+        } else if (state === "completed") {
+            mappedStatus = "completed";
+        } else if (state === "active") {
+            mappedStatus = "active";
+        } else if (state === "waiting" || state === "delayed") {
+            mappedStatus = "pending";
+        } else {
+            mappedStatus = state;
+        }
+
         return sendSuccess(res, 200, "Job status fetched successfully", {
             id: job.id,
             name: job.name,
-            status: source === "dlq" ? "failed" : state,
+            status: mappedStatus,
             data: job.data,
             failedReason: job.failedReason,
             progress: job.progress,

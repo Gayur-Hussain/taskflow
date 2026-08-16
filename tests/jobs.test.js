@@ -70,6 +70,6 @@ describe("Background Jobs Status Polling", () => {
 
         expect(res.statusCode).toBe(404);
         expect(res.body.success).toBe(false);
-        expect(res.body.error.code).toBe("JOB_NOT_FOUND");
+        expect(res.body.code).toBe("JOB_NOT_FOUND");
     }, 30000);
 });
