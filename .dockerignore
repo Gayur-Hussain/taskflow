@@ -1,0 +1,15 @@
+node_modules
+.git
+.github
+.env
+.env.*
+npm-debug.log
+Dockerfile.*
+docker-compose.yml
+README.md
+tests
+coverage
+.vscode
+.windsurf
+.claude
+.agents
