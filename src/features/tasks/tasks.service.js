@@ -91,7 +91,6 @@ class TasksService {
             );
 
         if (existingAssignment) {
-            return existingAssignment;
             return {
                 ...existingAssignment,
                 jobId: null,
