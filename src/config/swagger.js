@@ -95,6 +95,17 @@ export const swaggerSpec = {
                 },
             },
         },
+        "/auth/logout-all": {
+            post: {
+                summary: "Revoke all user sessions and logout from all devices",
+                tags: ["Authentication"],
+                security: [{ bearerAuth: [] }],
+                responses: {
+                    200: { description: "Logged out of all devices successfully" },
+                    401: { description: "Unauthorized" },
+                },
+            },
+        },
         "/organizations": {
             post: {
                 summary: "Create a new organization (tenant)",
@@ -268,6 +279,7 @@ export const swaggerSpec = {
                     { name: "page", in: "query", schema: { type: "integer", default: 1 } },
                     { name: "limit", in: "query", schema: { type: "integer", default: 20 } },
                     { name: "sort", in: "query", schema: { type: "string", example: "-createdAt" } },
+                    { name: "search", in: "query", schema: { type: "string" }, description: "Full-text search query for task titles and descriptions" },
                 ],
                 responses: {
                     200: { description: "Tasks retrieved successfully" },
