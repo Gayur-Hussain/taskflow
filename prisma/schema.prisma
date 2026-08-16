@@ -1,0 +1,167 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum OrgRole {
+  ORG_ADMIN
+  MEMBER
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  REVIEW
+  DONE
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  memberships OrgMember[]
+  assignments TaskAssignment[]
+  comments    Comment[]
+  tokens      RefreshToken[]
+}
+
+model Organization {
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  members     OrgMember[]
+  projects    Project[]
+  tasks       Task[]
+  comments    Comment[]
+  assignments TaskAssignment[]
+}
+
+model OrgMember {
+  id             String       @id @default(uuid())
+  userId         String
+  orgId          String
+  role           OrgRole      @default(MEMBER)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, orgId])
+  // Index on orgId is justified because we query members of an organization frequently during membership checks and list queries.
+  @@index([orgId])
+}
+
+model Project {
+  id          String    @id @default(uuid())
+  name        String
+  description String?
+  orgId       String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  tasks        Task[]
+
+  // Index on orgId is justified for rapid scoping of projects within a specific organization to ensure multi-tenant isolation.
+  @@index([orgId])
+}
+
+model Task {
+  id          String       @id @default(uuid())
+  title       String
+  description String?
+  status      TaskStatus   @default(TODO)
+  priority    TaskPriority @default(MEDIUM)
+  dueDate     DateTime?
+  orgId       String
+  projectId   String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  deletedAt   DateTime?
+
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  project      Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  assignments  TaskAssignment[]
+  comments     Comment[]
+
+  // Index justifications:
+  // - orgId: Speeds up listing tasks scoped to a single organization (tenant isolation).
+  // - projectId: Used when loading tasks for a specific project.
+  // - status: Speeds up dashboard counts and status-based task filtering.
+  // - priority: Speeds up priority-based task filtering.
+  // - dueDate: Used to sort and filter tasks by upcoming due dates.
+  @@index([orgId])
+  @@index([projectId])
+  @@index([status])
+  @@index([priority])
+  @@index([dueDate])
+}
+
+model TaskAssignment {
+  id        String   @id @default(uuid())
+  taskId    String
+  userId    String
+  orgId     String
+  createdAt DateTime @default(now())
+
+  task         Task         @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@unique([taskId, userId])
+  // Index on userId is justified because we frequently filter assignments to find tasks assigned to a specific user.
+  @@index([userId])
+  // Index on orgId is justified to scope assignments by tenant for faster tenant queries.
+  @@index([orgId])
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  content   String
+  orgId     String
+  taskId    String
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  task         Task         @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  // Index on orgId is justified for rapid scoping of task comments within a specific organization to enforce multi-tenant isolation.
+  @@index([orgId])
+}
+
+model RefreshToken {
+  id                 String    @id @default(uuid())
+  userId             String
+  tokenHash          String    @unique
+  expiresAt          DateTime
+  revokedAt          DateTime?
+  replacedByTokenId  String?
+  createdAt          DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
