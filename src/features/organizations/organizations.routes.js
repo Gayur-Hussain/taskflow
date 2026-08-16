@@ -9,5 +9,6 @@ const router = Router();
 
 router.post("/", protectRoute, validateBody(createOrgSchema), asyncHandler(organizationsController.createOrg));
 router.get("/memberships", protectRoute, asyncHandler(organizationsController.getMemberships));
+router.get("/members", protectRoute, asyncHandler(organizationsController.getOrgMembers));
 
 export default router;

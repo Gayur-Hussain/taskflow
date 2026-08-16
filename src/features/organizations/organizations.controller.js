@@ -25,6 +25,29 @@ const organizationsController = {
         const memberships = await organizationsService.getMemberships(userId);
         return sendSuccess(res, 200, "User memberships retrieved successfully", memberships);
     },
+
+    getOrgMembers: async (req, res) => {
+        const orgId = req.user.orgId;
+
+        if (!orgId) {
+            const err = new Error("Organization context is missing. Please select an organization.");
+            err.status = 400;
+            err.code = "ORG_CONTEXT_MISSING";
+            throw err;
+        }
+
+        const members = await organizationsService.getOrgMembers(orgId);
+        const mappedMembers = members.map((member) => ({
+            id: member.user.id,
+            name: member.user.name,
+            email: member.user.email,
+            role: member.role,
+        }));
+
+        return sendSuccess(res, 200, "Organization members retrieved successfully", {
+            members: mappedMembers,
+        });
+    },
 };
 
 export default organizationsController;

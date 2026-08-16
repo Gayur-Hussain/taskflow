@@ -49,6 +49,21 @@ const organizationsRepository = {
             },
         });
     },
+
+    listOrgMembers: async (orgId) => {
+        return prisma.orgMember.findMany({
+            where: { orgId },
+            include: {
+                user: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                    },
+                },
+            },
+        });
+    },
 };
 
 export default organizationsRepository;

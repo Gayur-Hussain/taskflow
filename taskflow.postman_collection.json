@@ -170,6 +170,28 @@
               "path": ["organizations"]
             }
           }
+        },
+        {
+          "name": "List Organization Members",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/organizations/members",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "members"]
+            }
+          }
         }
       ]
     },

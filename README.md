@@ -87,6 +87,10 @@ All endpoints are prefix-scoped to `/api/v1`.
 *   `POST /auth/logout-all` - Revokes all active refresh tokens for the authenticated user.
 *   `GET /auth/me` - Fetch details of the current authenticated user.
 
+### Organizations
+*   `POST /organizations` - Create a new organization (tenant).
+*   `GET /organizations/members` - Retrieve all registered members within the user's active organization (securely scoped via JWT claims).
+
 ### Projects & Tasks (CRUD)
 *   `POST /projects` - Create a project.
 *   `GET /projects` - List all projects in the organization.

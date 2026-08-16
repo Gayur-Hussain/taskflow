@@ -122,4 +122,26 @@ describe("Multi-Tenant Isolation & Role Authorization", () => {
     expect(res.statusCode).toBe(200);
     expect(res.body.success).toBe(true);
   }, 30000);
+
+  it("should allow members of Org A to list members of Org A (returns 200)", async () => {
+    const res = await request(app)
+      .get("/api/v1/organizations/members")
+      .set("Authorization", `Bearer ${orgAMemberToken}`);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.data).toHaveProperty("members");
+    expect(res.body.data.members.length).toBe(2); // userAAdmin, userAMember
+  }, 30000);
+
+  it("should allow User B to list members of Org B only (returns 200)", async () => {
+    const res = await request(app)
+      .get("/api/v1/organizations/members")
+      .set("Authorization", `Bearer ${orgBToken}`);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.data).toHaveProperty("members");
+    expect(res.body.data.members.length).toBe(1); // userBAdmin
+  }, 30000);
 });

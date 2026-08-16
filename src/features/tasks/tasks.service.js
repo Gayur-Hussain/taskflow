@@ -61,6 +61,7 @@ class TasksService {
         const task = await this.getTaskById(taskId, orgId);
 
         const targetUser = await authRepository.findUserById(targetUserId);
+
         if (!targetUser) {
             const err = new Error("Target user not found");
             err.status = 404;
@@ -68,35 +69,57 @@ class TasksService {
             throw err;
         }
 
-        const membership = await organizationsRepository.findOrgMemberByUserId(orgId, targetUserId);
+        const membership =
+            await organizationsRepository.findOrgMemberByUserId(
+                orgId,
+                targetUserId
+            );
+
         if (!membership) {
-            const err = new Error("Assignee must belong to the same organization");
+            const err = new Error(
+                "Assignee must belong to the same organization"
+            );
             err.status = 400;
             err.code = "INVALID_ASSIGNEE_ORGANIZATION";
             throw err;
         }
 
-        const existingAssignment = await tasksRepository.findAssignment(taskId, targetUserId);
+        const existingAssignment =
+            await tasksRepository.findAssignment(
+                taskId,
+                targetUserId
+            );
+
         if (existingAssignment) {
             return existingAssignment;
+            return {
+                ...existingAssignment,
+                jobId: null,
+            };
         }
 
         const assignment = await tasksRepository.assignTask(taskId, targetUserId, orgId);
 
+        let jobId = null;
         try {
-            await enqueueEmail({
+            const job = await enqueueEmail({
                 type: "task-assigned",
                 email: targetUser.email,
                 taskTitle: task.title,
                 assigneeName: targetUser.name,
             });
+            if (job) {
+                jobId = job.id;
+            }
         } catch (jobError) {
             console.error("Failed to enqueue assignment email background job:", jobError);
         }
 
-        return assignment;
+        return {
+            ...assignment,
+            jobId,
+        };
     }
-
     async unassignTask(taskId, targetUserId, orgId) {
         await this.getTaskById(taskId, orgId);
 

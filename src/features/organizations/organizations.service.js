@@ -31,6 +31,10 @@ class OrganizationsService {
     async getMemberships(userId) {
         return organizationsRepository.listUserMemberships(userId);
     }
+
+    async getOrgMembers(orgId) {
+        return organizationsRepository.listOrgMembers(orgId);
+    }
 }
 
 export default new OrganizationsService();

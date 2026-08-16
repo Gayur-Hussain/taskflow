@@ -131,6 +131,40 @@ export const swaggerSpec = {
                 },
             },
         },
+        "/organizations/members": {
+            get: {
+                summary: "List all members of the active organization (tenant)",
+                tags: ["Organizations"],
+                security: [{ bearerAuth: [] }],
+                responses: {
+                    200: {
+                        description: "List of organization members retrieved successfully",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "object",
+                                    properties: {
+                                        members: {
+                                            type: "array",
+                                            items: {
+                                                type: "object",
+                                                properties: {
+                                                    id: { type: "string", format: "uuid" },
+                                                    name: { type: "string" },
+                                                    email: { type: "string", format: "email" },
+                                                    role: { type: "string" },
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    401: { description: "Unauthorized" },
+                },
+            },
+        },
         "/projects": {
             post: {
                 summary: "Create a new project",
