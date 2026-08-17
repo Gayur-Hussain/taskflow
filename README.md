@@ -2,6 +2,9 @@
 
 TaskFlow is a production-ready, lightweight, multi-tenant project management system backend. This application supports multi-tenant isolation, secure Role-Based Access Control (RBAC), robust background job processing with queue retries and rate limiting, database soft-deletes, full-text task searching, and automated testing suites.
 
+*   **Architecture Document:** [ARCHITECTURE.md](file:///d:/work/taskflow/ARCHITECTURE.md)
+*   **Published Postman API Documentation:** [TaskFlow Postman API Docs](https://documenter.getpostman.com/view/37496182/2sBYApzYou)
+
 ---
 
 ## 1. System Architecture Overview
@@ -75,7 +78,11 @@ erDiagram
 
 ---
 
-## 4. API Endpoints
+## 4. API Documentation & Endpoints
+
+### Documentation Links
+*   **Published Postman Collection & Examples:** [TaskFlow Postman API Docs](https://documenter.getpostman.com/view/37496182/2sBYApzYou)
+*   **Swagger API Docs:** Available locally at `/docs` (e.g. `http://localhost:5000/docs` or `http://localhost:3000/docs` depending on configuration).
 
 All endpoints are prefix-scoped to `/api/v1`.
 
