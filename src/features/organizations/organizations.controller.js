@@ -26,13 +26,22 @@ const organizationsController = {
         return sendSuccess(res, 200, "User memberships retrieved successfully", memberships);
     },
 
-    getOrgMembers: async (req, res) => {
-        const orgId = req.user.orgId;
+    listAllOrgs: async (req, res) => {
+        const userId = req.user.id;
+        const memberships = await organizationsService.getMemberships(userId);
+        const organizations = memberships.map((m) => m.organization);
+        return sendSuccess(res, 200, "User organizations retrieved successfully", organizations);
+    },
 
-        if (!orgId) {
-            const err = new Error("Organization context is missing. Please select an organization.");
-            err.status = 400;
-            err.code = "ORG_CONTEXT_MISSING";
+    getOrgMembers: async (req, res) => {
+        const { orgId } = req.params;
+        const userId = req.user.id;
+
+        const membership = await organizationsService.verifyUserMembership(orgId, userId);
+        if (!membership) {
+            const err = new Error("Forbidden. You do not have access to this organization");
+            err.status = 403;
+            err.code = "FORBIDDEN";
             throw err;
         }
 

@@ -89,7 +89,8 @@ All endpoints are prefix-scoped to `/api/v1`.
 
 ### Organizations
 *   `POST /organizations` - Create a new organization (tenant).
-*   `GET /organizations/members` - Retrieve all registered members within the user's active organization (securely scoped via JWT claims).
+*   `GET /organizations` - List all organizations the authenticated user belongs to.
+*   `GET /organizations/:orgId/members` - Retrieve all registered members within a specific organization (cross-tenant access protected).
 
 ### Projects & Tasks (CRUD)
 *   `POST /projects` - Create a project.

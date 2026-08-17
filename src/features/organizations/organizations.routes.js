@@ -8,7 +8,8 @@ import asyncHandler from "../../utils/asyncHandler.js";
 const router = Router();
 
 router.post("/", protectRoute, validateBody(createOrgSchema), asyncHandler(organizationsController.createOrg));
+router.get("/", protectRoute, asyncHandler(organizationsController.listAllOrgs));
 router.get("/memberships", protectRoute, asyncHandler(organizationsController.getMemberships));
-router.get("/members", protectRoute, asyncHandler(organizationsController.getOrgMembers));
+router.get("/:orgId/members", protectRoute, asyncHandler(organizationsController.getOrgMembers));
 
 export default router;

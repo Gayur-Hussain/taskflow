@@ -172,6 +172,28 @@
           }
         },
         {
+          "name": "List User's Organizations",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/organizations",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations"]
+            }
+          }
+        },
+        {
           "name": "List Organization Members",
           "request": {
             "auth": {
@@ -187,9 +209,15 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/organizations/members",
+              "raw": "{{baseUrl}}/organizations/:orgId/members",
               "host": ["{{baseUrl}}"],
-              "path": ["organizations", "members"]
+              "path": ["organizations", ":orgId", "members"],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": ""
+                }
+              ]
             }
           }
         }
